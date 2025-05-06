@@ -16,19 +16,11 @@ dependencies:
     ---
     collections:
       - name: awx.awx
-      - name: azure.azcollection
-        version: ">=2.1.0"
-      - name: amazon.aws
-      - name: theforeman.foreman
-      - name: google.cloud
-      - name: openstack.cloud
-      - name: community.vmware
-      - name: ovirt.ovirt
+      - name: community.general
       - name: kubernetes.core
-      - name: ansible.posix
-      - name: ansible.windows
-      - name: redhatinsights.insights
+      - name: community.okd
       - name: kubevirt.core
+      - name: dellemc.openmanage
   system: |
     git-core [platform:rpm]
     python3.11-devel [platform:rpm compile]
@@ -49,20 +41,21 @@ dependencies:
     make [platform:rpm compile]
     openssl-devel [platform:rpm compile]
   python: |
-    git+https://github.com/ansible/ansible-sign
-    ncclient
-    paramiko
-    pykerberos
-    pyOpenSSL
-    pypsrp[kerberos,credssp]
-    pywinrm[kerberos,credssp]
-    toml
-    pexpect>=4.5
-    python-daemon
-    pyyaml
-    six
-    receptorctl
+    kubernetes
+    jmespath
+    pyVim
+    requests
+    PyVmomi
 additional_build_steps:
+  prepend_final: |    
+    # Install oc client - using coreutils installed above
+    RUN curl -L https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz -o /tmp/oc.tar.gz && \
+      mkdir -p /tmp/oc && \
+      tar -xzvf /tmp/oc.tar.gz -C /tmp/oc && \
+      mv /tmp/oc/oc /usr/local/bin/oc && \
+      chmod +x /usr/local/bin/oc && \
+      rm -rf /tmp/oc /tmp/oc.tar.gz
+
   append_base:
     - RUN $PYCMD -m pip install -U pip
   append_final:
