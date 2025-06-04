@@ -8,8 +8,7 @@ dependencies:
     package_system: python3.11
     python_path: /usr/bin/python3.11
   ansible_core:
-    # Require minimum of 2.15 to get ansible-inventory --limit option
-    package_pip: ansible-core>=2.15.0rc2,<2.16
+    package_pip: ansible-core>=2.18,<2.19
   ansible_runner:
     package_pip: ansible-runner
   galaxy: |
@@ -21,6 +20,8 @@ dependencies:
       - name: community.okd
       - name: kubevirt.core
       - name: dellemc.openmanage
+      - name: community.postgresql
+      - name: community.hashi_vault
   system: |
     git-core [platform:rpm]
     python3.11-devel [platform:rpm compile]
@@ -40,12 +41,15 @@ dependencies:
     gcc-c++ [platform:rpm compile]
     make [platform:rpm compile]
     openssl-devel [platform:rpm compile]
+    bind-utils [platform:rpm]
   python: |
     kubernetes
     jmespath
     pyVim
     requests
     PyVmomi
+    psycopg2-binary
+    dnspython
 additional_build_steps:
   prepend_final: |    
     # Install oc client - using coreutils installed above
